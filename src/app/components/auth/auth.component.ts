@@ -47,7 +47,7 @@ type Tab = 'login' | 'register';
         @if (tab() === 'login') {
           <form class="auth-form" (ngSubmit)="onLogin()" #loginForm="ngForm">
             <div class="auth-field">
-              <label for="login-username" class="auth-label">Nom d'utilisateur</label>
+              <label for="login-username" class="auth-label">Pseudo</label>
               <input
                 id="login-username"
                 type="text"
@@ -87,7 +87,7 @@ type Tab = 'login' | 'register';
         @if (tab() === 'register') {
           <form class="auth-form" (ngSubmit)="onRegister()" #registerForm="ngForm">
             <div class="auth-field">
-              <label for="reg-username" class="auth-label">Nom d'utilisateur</label>
+              <label for="reg-username" class="auth-label">Pseudo</label>
               <input
                 id="reg-username"
                 type="text"
