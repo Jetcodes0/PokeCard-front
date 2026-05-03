@@ -1,0 +1,95 @@
+<!-- Stars layer -->
+<div class="stars-layer" aria-hidden="true"></div>
+
+<!-- Main layout -->
+<div class="relative z-10 min-h-screen flex flex-col items-center justify-start px-4 py-12 pb-20">
+
+
+  <!-- ── Two-column layout ──────────────────────────────────────── -->
+  <div class="game-layout-wrapper">
+
+    <!-- ── Left: game column ────────────────────────────────────── -->
+    <div class="game-main-col">
+
+      <!-- Error banner -->
+      @if (errorMsg()) {
+        <div class="mb-6 px-5 py-3 rounded-2xl bg-red-950/60 border border-red-500/30 text-red-300 text-sm w-full text-center animate-fade-in">
+          ⚠️ {{ errorMsg() }}
+        </div>
+      }
+
+      <!-- Loading -->
+      @if (gameStatus() === 'loading') {
+        <div class="flex flex-col items-center gap-5 py-10 animate-fade-in">
+          <div class="pokeball-spinner"></div>
+          <p class="text-white/30 text-sm font-body">Chargement d'une carte…</p>
+        </div>
+      }
+
+      <!-- Game area -->
+      @if (gameStatus() !== 'loading') {
+        <div class="w-full flex flex-col items-center gap-6">
+
+          <!-- Card (rendered on Canvas) -->
+          <app-card-display
+            [sessionToken]="sessionToken()"
+            [blurAmount]="blurAmount()"
+            [status]="gameStatus()"
+            class="animate-fade-in"
+          />
+
+          <!-- Blur progress bar -->
+          @if (gameStatus() === 'playing') {
+            <div class="w-full px-1 animate-fade-in">
+              <div class="flex justify-between items-center mb-2">
+                <span class="text-white/30 text-xs font-body">Défloutage</span>
+                <span class="text-xs font-body" [class]="triesLeft() <= 3 ? 'text-red-400' : 'text-white/40'">
+                  {{ triesLeft() }} essai{{ triesLeft() > 1 ? 's' : '' }} restant{{ triesLeft() > 1 ? 's' : '' }}
+                </span>
+              </div>
+              <div class="blur-hint-bar">
+                <div class="blur-hint-fill" [style.width.%]="blurProgress()"></div>
+              </div>
+            </div>
+          }
+
+          <!-- Tries -->
+          <app-tries-indicator [triesLeft]="triesLeft()" />
+
+          <!-- Input -->
+          @if (gameStatus() === 'playing') {
+            <app-guess-input
+              [pokemonNames]="pokemonNames()"
+              (guess)="onGuess($event)"
+            />
+          }
+
+          <!-- Result -->
+          @if (gameStatus() === 'won' || gameStatus() === 'lost') {
+            <app-result-banner
+              [status]="resultStatus()"
+              [revealedName]="revealedName()"
+              (replay)="replay()"
+            />
+          }
+
+        </div>
+      }
+    </div>
+
+    <!-- ── Right: scoreboard column ──────────────────────────────── -->
+    <aside class="game-sidebar-col">
+      <app-scoreboard />
+    </aside>
+
+  </div>
+
+  <!-- ── Footer ─────────────────────────────────────────────────── -->
+  <footer class="mt-auto pt-10 text-white/15 text-xs font-body text-center">
+    Données fournies par
+    <a href="https://tcgdex.dev" target="_blank" rel="noopener"
+       class="hover:text-white/40 underline underline-offset-2 transition-colors">
+      TCGdex
+    </a>
+  </footer>
+</div>
